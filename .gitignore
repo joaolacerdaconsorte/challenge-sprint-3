@@ -34,9 +34,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### Claude Code (config local) ###
-.claude/
-
 ### Diretório temporário de testes ###
 tmp_test/
 
