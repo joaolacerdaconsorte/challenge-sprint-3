@@ -181,7 +181,7 @@ Todos os testes unitários e integrados (Flyway, Security RBAC, Fluxo 1 e Fluxo 
 
 ### 🎬 Link do Vídeo de Apresentação
 - **Link de Acesso ao Vídeo:** [Assistir Apresentação no Google Drive (Full HD 1080p)](https://drive.google.com/file/d/1pCVTw-kaoyCZfKrizUCa_p5GVBorYg2u/view?usp=sharing)
-- **Duração:** 3 minutos e 31 segundos
+- **Duração:** 3 minutos e 28 segundos
 - **Qualidade:** 1920x1080 Full HD (60 fps), formato MP4 / H.264
 - **Conteúdo do Vídeo:**
   1. Identificação dos 4 integrantes (João Vitor, Kauan, Murillo e Pedro) e escopo da Sprint 3.
