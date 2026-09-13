@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('Lista de Tutores')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-people me-2 text-primary"></i>Tutores de Pets</h2>
+            <p class="text-muted mb-0">Responsáveis pelos animais cadastrados na plataforma</p>
+        </div>
+        <div>
+            <a th:href="@{/tutores/novo}" class="btn btn-primary">
+                <i class="bi bi-person-plus me-1"></i>Novo Tutor
+            </a>
+        </div>
+    </div>
+
+    <div class="card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Pets Vinculados</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="t : ${tutores.content}">
+                        <td class="fw-semibold" th:text="${t.nome}">Nome</td>
+                        <td th:text="${t.cpf}">CPF</td>
+                        <td th:text="${t.email}">Email</td>
+                        <td th:text="${t.telefone}">Telefone</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${#lists.size(t.pets)} + ' pet(s)'">0</span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/tutores/{id}(id=${t.id})}" class="btn btn-outline-primary" title="Ver Detalhes">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <form sec:authorize="hasRole('ADMIN')" th:action="@{/tutores/{id}/excluir(id=${t.id})}" method="post" class="d-inline" onsubmit="return confirm('A exclusão removerá os pets associados. Deseja continuar?');">
+                                    <button type="submit" class="btn btn-outline-danger" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

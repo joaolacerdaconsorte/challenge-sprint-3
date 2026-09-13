@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Alertas Preventivos')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-bell-fill me-2 text-warning"></i>Central de Alertas Preventivos</h2>
+            <p class="text-muted mb-0">Monitoramento ativo de vacinas, tratamentos e retornos</p>
+        </div>
+    </div>
+
+    <div class="card p-4">
+        <div th:if="${#lists.isEmpty(alertas.content)}" class="text-center py-5 text-muted">
+            <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+            Nenhum alerta registrado no sistema.
+        </div>
+
+        <div th:unless="${#lists.isEmpty(alertas.content)}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Descrição do Alerta</th>
+                        <th>Pet</th>
+                        <th>Tutor</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="al : ${alertas.content}">
+                        <td th:text="${#temporals.format(al.dataAlerta, 'dd/MM/yyyy HH:mm')}">Data</td>
+                        <td><span class="badge bg-warning text-dark" th:text="${al.tipo}">TIPO</span></td>
+                        <td class="fw-semibold" th:text="${al.descricao}">Descrição</td>
+                        <td><a th:href="@{/pets/{id}(id=${al.pet.id})}" class="text-decoration-none" th:text="${al.pet.nome}">Pet</a></td>
+                        <td th:text="${al.tutor.nome}">Tutor</td>
+                        <td>
+                            <span th:if="${al.lido}" class="badge bg-light text-muted border">Lido</span>
+                            <span th:unless="${al.lido}" class="badge bg-danger">Não Lido</span>
+                        </td>
+                        <td>
+                            <form th:unless="${al.lido}" th:action="@{/alertas/{id}/marcar-lido(id=${al.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-check-lg me-1"></i>Marcar Lido
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Perfil do Tutor')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="fw-bold mb-1" th:text="${tutor.nome}">Nome do Tutor</h3>
+                <div class="text-muted">
+                    CPF: <span th:text="${tutor.cpf}">CPF</span> •
+                    E-mail: <span th:text="${tutor.email}">Email</span> •
+                    Telefone: <span th:text="${tutor.telefone}">Telefone</span>
+                </div>
+            </div>
+            <a th:href="@{/tutores}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Voltar</a>
+        </div>
+    </div>
+
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="bi bi-github me-2 text-primary"></i>Pets Sob Responsabilidade</h5>
+            <a th:href="@{/pets/novo}" class="btn btn-sm btn-primary"><i class="bi bi-plus me-1"></i>Vincular Pet</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(tutor.pets)}" class="text-center py-4 text-muted">
+            Nenhum pet vinculado a este tutor.
+        </div>
+
+        <div th:unless="${#lists.isEmpty(tutor.pets)}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Espécie</th>
+                        <th>Raça</th>
+                        <th>Peso</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pet : ${tutor.pets}">
+                        <td class="fw-semibold" th:text="${pet.nome}">Nome</td>
+                        <td><span class="badge bg-info text-dark" th:text="${pet.especie}">Espécie</span></td>
+                        <td th:text="${pet.raca}">Raça</td>
+                        <td th:text="${pet.peso != null ? pet.peso + ' kg' : 'N/A'}">Peso</td>
+                        <td>
+                            <a th:href="@{/pets/{id}(id=${pet.id})}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-journal-medical me-1"></i>Prontuário
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

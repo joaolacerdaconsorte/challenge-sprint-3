@@ -1,0 +1,563 @@
+{
+  "info": {
+    "_postman_id": "pet360-fiap-2026-collection",
+    "name": "Pet360 — Challenge FIAP Java Advanced 2026",
+    "description": "Coleção completa para testes da API REST do Pet360 (CLYVO VET).\n\n**Como usar:**\n1. Suba a aplicação com `./gradlew bootRun`\n2. Execute a request `Auth → Login (admin)` — o token será salvo automaticamente em `{{token}}`\n3. Todas as outras requests usam Bearer Auth com esse token\n\n**Variáveis:**\n- `baseUrl` = http://localhost:8080\n- `token` = preenchido após login\n- `tutorId`, `clinicaId`, `petId`, `consultaId`, `vacinaId`, `medicamentoId`, `agendamentoId`, `alertaId` = capturados automaticamente após criação\n\n**Equipe:** João Vitor Lacerda RM 565565, Kauan Vieira de lima RM 565403 e Murillo Fernandes Carapia RM 564969 — 2TDSPW",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "tutorId", "value": "" },
+    { "key": "clinicaId", "value": "" },
+    { "key": "petId", "value": "" },
+    { "key": "consultaId", "value": "" },
+    { "key": "vacinaId", "value": "" },
+    { "key": "medicamentoId", "value": "" },
+    { "key": "agendamentoId", "value": "" },
+    { "key": "alertaId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (admin)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+                  "var data = pm.response.json();",
+                  "pm.collectionVariables.set('token', data.token);",
+                  "pm.test('token salvo', function(){ pm.expect(data.token).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (user)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}" }
+          }
+        },
+        {
+          "name": "Register novo usuário",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"novo_user\",\n  \"password\": \"senha123\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tutores",
+      "item": [
+        {
+          "name": "Listar tutores (paginado + filtros)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/tutores?page=0&size=20&sort=nome,asc&nome=&email=",
+              "host": ["{{baseUrl}}"], "path": ["api","tutores"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "nome,asc" },
+                { "key": "nome", "value": "" },
+                { "key": "email", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar tutor por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/tutores/{{tutorId}}" }
+        },
+        {
+          "name": "Criar tutor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/tutores",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Mendes\",\n  \"cpf\": \"529.982.247-25\",\n  \"email\": \"carlos@email.com\",\n  \"telefone\": \"11988887777\",\n  \"endereco\": \"Rua dos Lirios, 50\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) { var d = pm.response.json(); pm.collectionVariables.set('tutorId', d.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atualizar tutor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/tutores/{{tutorId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Mendes Junior\",\n  \"cpf\": \"529.982.247-25\",\n  \"email\": \"carlos@email.com\",\n  \"telefone\": \"11988887777\",\n  \"endereco\": \"Rua dos Lirios, 50\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remover tutor",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tutores/{{tutorId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Clinicas",
+      "item": [
+        {
+          "name": "Listar clinicas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/clinicas?page=0&size=20&sort=nome,asc" }
+        },
+        {
+          "name": "Buscar clinica por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/clinicas/{{clinicaId}}" }
+        },
+        {
+          "name": "Criar clinica",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/clinicas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Animal Care Center\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"email\": \"contato@animalcare.com\",\n  \"telefone\": \"1144445555\",\n  \"endereco\": \"R. Lopes Chaves, 200\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('clinicaId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar clinica",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/clinicas/{{clinicaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Animal Care Center Plus\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"email\": \"contato@animalcare.com\",\n  \"telefone\": \"1144445555\",\n  \"endereco\": \"R. Lopes Chaves, 200\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remover clinica",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/clinicas/{{clinicaId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Pets",
+      "item": [
+        {
+          "name": "Listar pets (filtros + paginação)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/pets?page=0&size=20&sort=nome,asc&especie=CACHORRO&nome=&tutorId=",
+              "host": ["{{baseUrl}}"], "path": ["api","pets"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "nome,asc" },
+                { "key": "especie", "value": "CACHORRO" },
+                { "key": "nome", "value": "" },
+                { "key": "tutorId", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar pet por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/{{petId}}" }
+        },
+        {
+          "name": "Criar pet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/pets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Buddy\",\n  \"especie\": \"CACHORRO\",\n  \"raca\": \"Beagle\",\n  \"dataNascimento\": \"2022-05-20\",\n  \"peso\": 12.5,\n  \"observacoes\": \"Pet muito ativo\",\n  \"tutorId\": \"{{tutorId}}\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('petId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar pet",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/pets/{{petId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Buddy\",\n  \"especie\": \"CACHORRO\",\n  \"raca\": \"Beagle\",\n  \"dataNascimento\": \"2022-05-20\",\n  \"peso\": 13.0,\n  \"observacoes\": \"Engordou um pouco\",\n  \"tutorId\": \"{{tutorId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Histórico do pet (timeline)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/{{petId}}/historico" }
+        },
+        {
+          "name": "Vacinas do pet (todas)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/{{petId}}/vacinas" }
+        },
+        {
+          "name": "Vacinas vencidas/próximas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/{{petId}}/vacinas?vencidas=true&dias=60" }
+        },
+        {
+          "name": "Medicamentos ativos do pet",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/{{petId}}/medicamentos?ativo=true" }
+        },
+        {
+          "name": "Remover pet",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/pets/{{petId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Consultas",
+      "item": [
+        {
+          "name": "Listar consultas (filtros)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/consultas?page=0&size=20&sort=dataHora,desc&status=&clinicaId=&petId=&dataInicio=&dataFim=",
+              "host": ["{{baseUrl}}"], "path": ["api","consultas"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "dataHora,desc" },
+                { "key": "status", "value": "", "description": "AGENDADA, REALIZADA, CANCELADA" },
+                { "key": "clinicaId", "value": "" },
+                { "key": "petId", "value": "" },
+                { "key": "dataInicio", "value": "", "description": "Ex: 2026-01-01T00:00:00" },
+                { "key": "dataFim", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar consulta por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/consultas/{{consultaId}}" }
+        },
+        {
+          "name": "Criar consulta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/consultas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataHora\": \"2026-09-15T10:00:00\",\n  \"status\": \"AGENDADA\",\n  \"motivo\": \"Consulta de rotina\",\n  \"diagnostico\": null,\n  \"valor\": 180.00,\n  \"petId\": \"{{petId}}\",\n  \"clinicaId\": \"{{clinicaId}}\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('consultaId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar consulta",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/consultas/{{consultaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataHora\": \"2026-09-15T10:00:00\",\n  \"status\": \"REALIZADA\",\n  \"motivo\": \"Consulta de rotina\",\n  \"diagnostico\": \"Saudável\",\n  \"valor\": 180.00,\n  \"petId\": \"{{petId}}\",\n  \"clinicaId\": \"{{clinicaId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remover consulta",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/consultas/{{consultaId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Vacinas",
+      "item": [
+        {
+          "name": "Listar vacinas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/vacinas?page=0&size=20&sort=dataAplicacao,desc" }
+        },
+        {
+          "name": "Buscar vacina por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/vacinas/{{vacinaId}}" }
+        },
+        {
+          "name": "Criar vacina",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/vacinas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Giardia\",\n  \"dataAplicacao\": \"2026-05-20\",\n  \"dataProxima\": \"2027-05-20\",\n  \"lote\": \"LOT-XYZ\",\n  \"petId\": \"{{petId}}\",\n  \"consultaId\": null\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('vacinaId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar vacina",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/vacinas/{{vacinaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Giardia\",\n  \"dataAplicacao\": \"2026-05-20\",\n  \"dataProxima\": \"2027-05-20\",\n  \"lote\": \"LOT-XYZ-UPD\",\n  \"petId\": \"{{petId}}\",\n  \"consultaId\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Remover vacina",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/vacinas/{{vacinaId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Medicamentos",
+      "item": [
+        {
+          "name": "Listar medicamentos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/medicamentos?page=0&size=20&sort=dataInicio,desc&ativo=true" }
+        },
+        {
+          "name": "Buscar medicamento por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/medicamentos/{{medicamentoId}}" }
+        },
+        {
+          "name": "Criar medicamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/medicamentos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Vermifugo Drontal\",\n  \"dosagem\": \"1 comprimido/10kg\",\n  \"frequencia\": \"1x a cada 3 meses\",\n  \"dataInicio\": \"2026-05-24\",\n  \"dataFim\": null,\n  \"ativo\": true,\n  \"custo\": 35.50,\n  \"petId\": \"{{petId}}\",\n  \"consultaId\": null\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('medicamentoId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar medicamento",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/medicamentos/{{medicamentoId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Vermifugo Drontal Plus\",\n  \"dosagem\": \"1 comprimido/10kg\",\n  \"frequencia\": \"1x a cada 3 meses\",\n  \"dataInicio\": \"2026-05-24\",\n  \"dataFim\": null,\n  \"ativo\": true,\n  \"custo\": 42.00,\n  \"petId\": \"{{petId}}\",\n  \"consultaId\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Finalizar tratamento (PATCH)",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/api/medicamentos/{{medicamentoId}}/finalizar" }
+        },
+        {
+          "name": "Remover medicamento",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/medicamentos/{{medicamentoId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Agendamentos",
+      "item": [
+        {
+          "name": "Listar agendamentos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/agendamentos?page=0&size=20&sort=dataHora,asc" }
+        },
+        {
+          "name": "Pendentes futuros",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/agendamentos/pendentes" }
+        },
+        {
+          "name": "Buscar agendamento por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/agendamentos/{{agendamentoId}}" }
+        },
+        {
+          "name": "Criar agendamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/agendamentos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataHora\": \"2026-12-01T09:30:00\",\n  \"tipo\": \"CONSULTA\",\n  \"status\": \"PENDENTE\",\n  \"observacoes\": \"Trazer carteira de vacinação\",\n  \"petId\": \"{{petId}}\",\n  \"clinicaId\": \"{{clinicaId}}\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('agendamentoId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar agendamento",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/agendamentos/{{agendamentoId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataHora\": \"2026-12-02T10:00:00\",\n  \"tipo\": \"CONSULTA\",\n  \"status\": \"PENDENTE\",\n  \"observacoes\": \"Reagendado\",\n  \"petId\": \"{{petId}}\",\n  \"clinicaId\": \"{{clinicaId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirmar agendamento (PATCH)",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/api/agendamentos/{{agendamentoId}}/confirmar" }
+        },
+        {
+          "name": "Cancelar agendamento (PATCH)",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/api/agendamentos/{{agendamentoId}}/cancelar" }
+        },
+        {
+          "name": "Remover agendamento",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/agendamentos/{{agendamentoId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Alertas",
+      "item": [
+        {
+          "name": "Listar alertas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/alertas?page=0&size=20&sort=dataAlerta,desc" }
+        },
+        {
+          "name": "Listar alertas não lidos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/alertas?lido=false&sort=dataAlerta,desc" }
+        },
+        {
+          "name": "Buscar alerta por ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/alertas/{{alertaId}}" }
+        },
+        {
+          "name": "Criar alerta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/alertas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"VACINA\",\n  \"descricao\": \"Reforço da V10 em 30 dias\",\n  \"dataAlerta\": null,\n  \"petId\": \"{{petId}}\",\n  \"tutorId\": \"{{tutorId}}\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "exec": [ "if (pm.response.code === 201) pm.collectionVariables.set('alertaId', pm.response.json().id);" ] } }
+          ]
+        },
+        {
+          "name": "Atualizar alerta",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/alertas/{{alertaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"VACINA\",\n  \"descricao\": \"Reforço da V10 atualizado\",\n  \"dataAlerta\": null,\n  \"petId\": \"{{petId}}\",\n  \"tutorId\": \"{{tutorId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Marcar como lido (PATCH)",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/api/alertas/{{alertaId}}/marcar-lido" }
+        },
+        {
+          "name": "Remover alerta",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/alertas/{{alertaId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Casos de teste — erros esperados",
+      "item": [
+        {
+          "name": "401 — sem token",
+          "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/api/pets" }
+        },
+        {
+          "name": "400 — payload inválido (peso negativo, nome vazio)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/pets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"\",\n  \"especie\": \"CACHORRO\",\n  \"peso\": -5.0,\n  \"tutorId\": \"{{tutorId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "400 — CPF duplicado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/tutores",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Duplicado\",\n  \"cpf\": \"111.222.333-44\",\n  \"email\": \"dup@email.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "404 — pet inexistente",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/00000000-0000-0000-0000-000000000000" }
+        },
+        {
+          "name": "400 — UUID malformado",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/pets/nao-eh-um-uuid" }
+        }
+      ]
+    }
+  ]
+}

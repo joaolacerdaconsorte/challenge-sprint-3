@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Triagem e Agendamento Preventivo')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="badge bg-primary mb-1">FLUXO NÃO-CRUD 1</span>
+                        <h3 class="fw-bold mb-0">Triagem & Agendamento Preventivo</h3>
+                    </div>
+                    <a th:href="@{/agendamentos}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Voltar</a>
+                </div>
+
+                <div class="alert alert-info border-0 d-flex align-items-center mb-4">
+                    <i class="bi bi-shield-check fs-4 me-3 text-primary"></i>
+                    <small>Este fluxo valida automaticamente a disponibilidade de horário na clínica para evitar sobreposição (anti-conflito) e analisa a carteirinha de vacinas e remédios do pet para gerar alertas preventivos.</small>
+                </div>
+
+                <form th:action="@{/agendamentos/triagem}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="petId" class="form-label fw-semibold">Selecione o Pet *</label>
+                            <select id="petId" name="petId" class="form-select" required>
+                                <option value="">Escolha o pet...</option>
+                                <option th:each="p : ${pets}" th:value="${p.id}" th:text="${p.nome} + ' (' + ${p.especie} + ' - Tutor: ' + ${p.tutor.nome} + ')'"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="clinicaId" class="form-label fw-semibold">Unidade Clínica *</label>
+                            <select id="clinicaId" name="clinicaId" class="form-select" required>
+                                <option value="">Escolha a clínica...</option>
+                                <option th:each="c : ${clinicas}" th:value="${c.id}" th:text="${c.nome}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="dataHora" class="form-label fw-semibold">Data e Horário *</label>
+                            <input type="datetime-local" id="dataHora" name="dataHora" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="tipo" class="form-label fw-semibold">Tipo de Procedimento *</label>
+                            <select id="tipo" name="tipo" class="form-select" required>
+                                <option th:each="tp : ${tipos}" th:value="${tp}" th:text="${tp}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="observacoes" class="form-label fw-semibold">Queixa Principal / Motivo da Consulta</label>
+                            <textarea id="observacoes" name="observacoes" class="form-control" rows="3" placeholder="Descreva os sintomas observados ou o objetivo do agendamento..."></textarea>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                <i class="bi bi-shield-fill-check me-2"></i>Processar Triagem e Confirmar Agendamento
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

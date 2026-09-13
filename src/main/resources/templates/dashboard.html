@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('Painel de Controle')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Painel de Saúde Animal</h2>
+            <p class="text-muted mb-0">Visão integrada da jornada preventiva e continuidade clínica</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/agendamentos/novo}" class="btn btn-primary">
+                <i class="bi bi-calendar-plus me-1"></i>Novo Agendamento
+            </a>
+            <a sec:authorize="hasAnyRole('ADMIN', 'VETERINARIO')" th:href="@{/atendimento/fila}" class="btn btn-warning text-dark fw-semibold">
+                <i class="bi bi-clipboard2-pulse me-1"></i>Fila Clínica
+            </a>
+        </div>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card p-3 bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold">Pets Cadastrados</span>
+                        <h3 class="fw-bold mb-0 text-primary" th:text="${totalPets}">0</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+                        <i class="bi bi-github fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card p-3 bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold">Tutores Ativos</span>
+                        <h3 class="fw-bold mb-0 text-info" th:text="${totalTutores}">0</h3>
+                    </div>
+                    <div class="bg-info bg-opacity-10 text-info rounded-3 p-3">
+                        <i class="bi bi-people fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card p-3 bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold">Clínicas Parceiras</span>
+                        <h3 class="fw-bold mb-0 text-success" th:text="${totalClinicas}">0</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 text-success rounded-3 p-3">
+                        <i class="bi bi-hospital fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card p-3 bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold">Consultas Realizadas</span>
+                        <h3 class="fw-bold mb-0 text-warning" th:text="${totalConsultas}">0</h3>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3">
+                        <i class="bi bi-check2-circle fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Fila de Agendamentos Pendentes -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Agendamentos Pendentes</h5>
+                    <a th:href="@{/agendamentos}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(agendamentosPendentes)}" class="text-center py-4 text-muted">
+                    <i class="bi bi-calendar2-x fs-1 d-block mb-2"></i>
+                    Nenhum agendamento pendente no momento.
+                </div>
+
+                <div th:unless="${#lists.isEmpty(agendamentosPendentes)}" class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Pet</th>
+                                <th>Clínica</th>
+                                <th>Data/Hora</th>
+                                <th>Tipo</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="a : ${agendamentosPendentes}">
+                                <td>
+                                    <strong th:text="${a.pet.nome}">Pet</strong><br>
+                                    <small class="text-muted" th:text="${a.pet.especie}">Cão</small>
+                                </td>
+                                <td th:text="${a.clinica.nome}">Clínica</td>
+                                <td th:text="${#temporals.format(a.dataHora, 'dd/MM/yyyy HH:mm')}">Data</td>
+                                <td><span class="badge bg-secondary" th:text="${a.tipo}">Tipo</span></td>
+                                <td>
+                                    <a th:href="@{/agendamentos/{id}/comprovante(id=${a.id})}" class="btn btn-sm btn-outline-info" title="Comprovante">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas Preventivos -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-bell-fill me-2 text-warning"></i>Alertas Preventivos</h5>
+                    <a th:href="@{/alertas}" class="btn btn-sm btn-outline-warning">Ver todos</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(ultimosAlertas)}" class="text-center py-4 text-muted">
+                    <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                    Nenhum alerta recente registrado.
+                </div>
+
+                <div th:unless="${#lists.isEmpty(ultimosAlertas)}" class="list-group list-group-flush">
+                    <div th:each="al : ${ultimosAlertas}" class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-warning text-dark mb-1" th:text="${al.tipo}">TIPO</span>
+                            <small class="text-muted" th:text="${#temporals.format(al.dataAlerta, 'dd/MM/yyyy HH:mm')}">Data</small>
+                        </div>
+                        <p class="mb-1 small fw-semibold" th:text="${al.descricao}">Descrição do alerta preventivo</p>
+                        <small class="text-secondary">Pet: <span th:text="${al.pet.nome}">Nome</span> | Tutor: <span th:text="${al.tutor.nome}">Tutor</span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

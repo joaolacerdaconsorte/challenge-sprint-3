@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Comprovante de Agendamento')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4 p-md-5 border-success">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle p-3 mb-2" style="width: 56px; height: 56px;">
+                        <i class="bi bi-check2 fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Comprovante de Agendamento</h3>
+                    <p class="text-muted small">CLYVO VET — Protocolo de Continuidade Preventiva</p>
+                    <span class="badge bg-light text-dark border">Protocolo: <span th:text="${agendamento.id}">ID</span></span>
+                </div>
+
+                <div class="card bg-light border-0 p-3 mb-4">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Paciente (Pet):</small>
+                            <strong class="fs-6" th:text="${agendamento.pet.nome}">Pet</strong> (<span th:text="${agendamento.pet.especie}">Espécie</span>)
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Tutor Responsável:</small>
+                            <strong class="fs-6" th:text="${agendamento.pet.tutor.nome}">Tutor</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Data e Horário:</small>
+                            <strong class="fs-6 text-primary" th:text="${#temporals.format(agendamento.dataHora, 'dd/MM/yyyy HH:mm')}">Data</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <small class="text-muted d-block">Clínica Credenciada:</small>
+                            <strong class="fs-6" th:text="${agendamento.clinica.nome}">Clínica</strong>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted d-block">Endereço da Unidade:</small>
+                            <span th:text="${agendamento.clinica.endereco}">Endereço</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resultado da Triagem Automatizada -->
+                <div th:if="${resultado != null and resultado.alertaCriado}" class="alert alert-warning border-0 p-3 mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-warning"></i>
+                        <div>
+                            <strong class="d-block mb-1">Alerta Preventivo Emitido Automaticamente:</strong>
+                            <p class="mb-0 small" th:text="${resultado.alertaDescricao}">Descrição do alerta</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/agendamentos}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Lista de Agendamentos
+                    </a>
+                    <a th:href="@{/pets/{id}(id=${agendamento.pet.id})}" class="btn btn-primary">
+                        <i class="bi bi-journal-medical me-1"></i>Ver Prontuário do Pet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

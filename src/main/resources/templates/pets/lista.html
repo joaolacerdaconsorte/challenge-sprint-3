@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('Lista de Pets')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<main class="main-content container mt-4">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-github me-2 text-primary"></i>Pets Cadastrados</h2>
+            <p class="text-muted mb-0">Gestão de animais e prontuários médicos</p>
+        </div>
+        <div>
+            <a th:href="@{/pets/novo}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>Cadastrar Pet
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card p-3 mb-4 bg-white">
+        <form th:action="@{/pets}" method="get" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="nome" th:value="${nomeFiltro}" class="form-control" placeholder="Buscar por nome do pet...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="especie" class="form-select">
+                    <option value="">Todas as Espécies</option>
+                    <option th:each="esp : ${especies}" th:value="${esp}" th:text="${esp}" th:selected="${esp == especieFiltro}"></option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+                <a th:href="@{/pets}" class="btn btn-outline-secondary">Limpar</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabela de Pets -->
+    <div class="card p-4">
+        <div th:if="${#lists.isEmpty(pets.content)}" class="text-center py-4 text-muted">
+            <i class="bi bi-emoji-neutral fs-1 d-block mb-2"></i>
+            Nenhum pet encontrado com os critérios selecionados.
+        </div>
+
+        <div th:unless="${#lists.isEmpty(pets.content)}" class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Espécie / Raça</th>
+                        <th>Tutor Responsável</th>
+                        <th>Peso (kg)</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pet : ${pets.content}">
+                        <td>
+                            <strong class="fs-6" th:text="${pet.nome}">Nome</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-info text-dark me-1" th:text="${pet.especie}">Espécie</span>
+                            <span class="text-secondary small" th:text="${pet.raca}">Raça</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/tutores/{id}(id=${pet.tutor.id})}" class="text-decoration-none fw-semibold" th:text="${pet.tutor.nome}">Tutor</a><br>
+                            <small class="text-muted" th:text="${pet.tutor.telefone}">Telefone</small>
+                        </td>
+                        <td>
+                            <span th:text="${pet.peso != null ? pet.peso + ' kg' : 'Não aferido'}">0.0 kg</span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/pets/{id}(id=${pet.id})}" class="btn btn-outline-primary" title="Ver Prontuário">
+                                    <i class="bi bi-journal-medical me-1"></i>Prontuário
+                                </a>
+                                <form sec:authorize="hasRole('ADMIN')" th:action="@{/pets/{id}/excluir(id=${pet.id})}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja remover este pet?');">
+                                    <button type="submit" class="btn btn-outline-danger" title="Excluir Pet">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>
