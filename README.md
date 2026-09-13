@@ -177,9 +177,29 @@ Todos os testes unitários e integrados (Flyway, Security RBAC, Fluxo 1 e Fluxo 
 
 ---
 
-## 7. Roteiro de Apresentação em Vídeo (10 Minutos)
+## 7. Vídeo de Demonstração e Roteiro de Apresentação
 
-Para a gravação do vídeo de entrega de até 10 minutos exigido pelo professor Leonardo Real, a equipe deve seguir este roteiro cronometrado e dividido entre todos os 4 integrantes:
+### 🎬 Link do Vídeo de Apresentação
+- **Link de Acesso ao Vídeo:** [Assistir Apresentação no Google Drive (Full HD 1080p)](https://drive.google.com/file/d/1pCVTw-kaoyCZfKrizUCa_p5GVBorYg2u/view?usp=sharing)
+- **Duração:** 3 minutos e 31 segundos
+- **Qualidade:** 1920x1080 Full HD (60 fps), formato MP4 / H.264
+- **Conteúdo do Vídeo:**
+  1. Identificação dos 4 integrantes (João Vitor, Kauan, Murillo e Pedro) e escopo da Sprint 3.
+  2. Inspeção do código das migrações Flyway (`V1` e `V2`), `application.yml` (`validate`), Spring Security RBAC e serviços Não-CRUD.
+  3. Demonstração da aplicação web real em `http://localhost:8080`:
+     - Login com CSRF como Tutor (`user` / `user123`)
+     - Teste de segurança RBAC com tentativa de acesso a `/clinicas/nova` e redirecionamento para página customizada 403 (Acesso Negado)
+     - **Fluxo Não-CRUD 1 (Triagem Preventiva e Agendamento)** com detecção de vacina vencida e alerta no comprovante
+     - Central de Alertas
+     - Logout e login como Veterinário (`vet` / `vet123`)
+     - **Fluxo Não-CRUD 2 (Fila de Atendimento Clínico)**: consulta, nova pesagem do pet, aplicação de vacina com cálculo automático de reforço (+365 dias) e prescrição de medicamento em transação atômica (`@Transactional`)
+     - Prontuário médico atualizado
+     - Documentação OpenAPI / Swagger UI
+  4. Execução da suíte de testes automatizados JUnit 5 (6 testes aprovados, `BUILD SUCCESSFUL`).
+  5. Encerramento com checklist dos 100/100 pontos atendidos.
+
+### ⏱️ Roteiro Cronometrado da Apresentação
+Para a gravação e arguição com o professor Leonardo Real, a equipe dividiu os tópicos conforme o roteiro abaixo:
 
 ```
 [00:00 - 01:30] Abertura e Visão de Negócio — João Vitor e Pedro Previtali
