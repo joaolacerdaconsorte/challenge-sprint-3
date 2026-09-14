@@ -1,0 +1,288 @@
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> SET SERVEROUTPUT ON SIZE UNLIMITED;
+SQL> SET LINESIZE 200;
+SQL> SET PAGESIZE 100;
+SQL> SET FEEDBACK ON;
+
+Executando limpeza controlada de tabelas existentes...
+>> Tabela removida com sucesso: TB_AUDITORIA_PET
+>> Tabela removida com sucesso: TB_CONTA_SALDO
+>> Tabela removida com sucesso: TB_ALERTA
+>> Tabela removida com sucesso: TB_AGENDAMENTO
+>> Tabela removida com sucesso: TB_MEDICAMENTO
+>> Tabela removida com sucesso: TB_VACINA
+>> Tabela removida com sucesso: TB_CONSULTA
+>> Tabela removida com sucesso: TB_PET
+>> Tabela removida com sucesso: TB_CLINICA
+>> Tabela removida com sucesso: TB_TUTOR
+>> Tabela removida com sucesso: TB_LOG_ERROS
+
+PL/SQL procedure successfully completed.
+
+Criando tabelas do ecossistema Clyvo Vet...
+Table TB_LOG_ERROS created.
+Table TB_TUTOR created.
+Table TB_CLINICA created.
+Table TB_PET created.
+Table TB_CONSULTA created.
+Table TB_VACINA created.
+Table TB_MEDICAMENTO created.
+Table TB_AGENDAMENTO created.
+Table TB_ALERTA created.
+Table TB_CONTA_SALDO created.
+Table TB_AUDITORIA_PET created.
+
+Tabelas criadas com sucesso!
+
+Criando Trigger de Auditoria TRG_AUDITORIA_PET...
+Trigger TRG_AUDITORIA_PET compiled.
+
+Criando Stored Procedures de Insercao e Carga...
+Procedure SP_INSERIR_TUTOR compiled.
+Procedure SP_INSERIR_CLINICA compiled.
+Procedure SP_INSERIR_PET compiled.
+Procedure SP_INSERIR_CONSULTA compiled.
+Procedure SP_INSERIR_VACINA compiled.
+Procedure SP_INSERIR_MEDICAMENTO compiled.
+Procedure SP_INSERIR_AGENDAMENTO compiled.
+Procedure SP_INSERIR_ALERTA compiled.
+Procedure SP_INSERIR_CONTA_SALDO compiled.
+
+Stored Procedures de insercao criadas com sucesso!
+
+Executando carga inicial de dados via Procedures...
+>> Carga seed concluida com sucesso em todas as tabelas!
+
+PL/SQL procedure successfully completed.
+
+Criando Funcoes de Negocio e Serializacao JSON Manual...
+Function FN_PET_JSON compiled.
+Function FN_CLASSIFICAR_RISCO compiled.
+
+Funcoes de negocio criadas com sucesso!
+
+Criando Stored Procedure de Relatorio de Saldos com Quebra de Grupo...
+Procedure SP_RELATORIO_SALDOS compiled.
+
+Executando Bloco Analitico LAG / LEAD sobre Historico Ponderal...
+================================================================================
+RELATORIO ANALITICO DE COMPARACAO DE PESOS (FUNCOES DE JANELA LAG / LEAD)
+================================================================================
+ID   NOME DO PET    ESPECIE     PESO ANTERIOR    PESO ATUAL    PESO PROXIMO  
+-----  --------------  ----------  ---------------  ------------  ------------
+1    Rex            Cachorro    Vazio            31.50 kg      25.20 kg      
+2    Luna           Cachorro    31.50 kg         25.20 kg       4.60 kg      
+3    Mia            Gato        25.20 kg          4.60 kg      34.00 kg      
+4    Thor           Cachorro     4.60 kg         34.00 kg       3.80 kg      
+5    Pipoca         Gato        34.00 kg          3.80 kg      Vazio         
+================================================================================
+Total de registros processados no relatorio LAG/LEAD: 5
+
+PL/SQL procedure successfully completed.
+
+Executando Consulta Complexa 1 (Consolidado de Atendimentos por Tutor e Clinica)...
+================================================================================
+CONSULTA COMPLEXA 1: CONSOLIDADO DE ATENDIMENTOS (4 JOINS, GROUP BY, ORDER BY)
+================================================================================
+NOME DO TUTOR            CLINICA PARCEIRA              QTD CONSULTAS  ULTIMA DATA
+-----------------------  ----------------------------  -------------  ----------
+Beatriz Mendonca         Pronto Socorro Animal Santan  1              18/05/2025
+Joao Vitor Lacerda       Clyvo Vet Matriz Jardins      1              10/01/2025
+Kauan Vieira de Lima     Hospital Veterinario PetCare  1              15/02/2025
+Murillo Carapia          Clinica Animal Vida Moema     1              20/03/2025
+Pedro Previtali          Centro Veterinario VetAlpha   1              12/04/2025
+
+PL/SQL procedure successfully completed.
+
+Executando Consulta Complexa 2 (Cobertura Vacinal por Tutor e Pet)...
+================================================================================
+CONSULTA COMPLEXA 2: COBERTURA VACINAL PREVENTIVA POR PET E TUTOR
+================================================================================
+TUTOR                    PET         ESPECIE     DOSES   PROXIMO REFORCO
+-----------------------  ----------  ----------  ------  ---------------
+Kauan Vieira de Lima     Luna        Cachorro    1       15/02/2026
+Murillo Carapia          Mia         Gato        1       20/03/2026
+Beatriz Mendonca         Pipoca      Gato        1       18/05/2026
+Joao Vitor Lacerda       Rex         Cachorro    1       10/01/2026
+Pedro Previtali          Thor        Cachorro    1       12/04/2026
+
+PL/SQL procedure successfully completed.
+
+Executando Bateria de Testes Funcionais e Demonstracao de Excecoes...
+
+--------------------------------------------------------------------------------
+[TESTE SUCESSO 1] Execucao do Relatorio de Quebra de Grupo de Saldos
+--------------------------------------------------------------------------------
+======================================================================
+RELATORIO DE SALDOS CONSOLIDADOS POR AGENCIA (QUEBRA DE GRUPO)
+======================================================================
+AGENCIA     CONTA               SALDO (R$)
+------------  ------------  ----------------
+1           101                   4.363,55
+1           102                   4.794,76
+1           103                   4.718,25
+1           104                   5.387,45
+1           105                   5.027,34
+----------------------------------------------------------------------
+SUBTOTAL AG 1:                   24.291,35
+----------------------------------------------------------------------
+2           201                   5.652,84
+2           202                   4.583,02
+2           203                   5.555,77
+2           204                   5.936,67
+2           205                   4.508,74
+----------------------------------------------------------------------
+SUBTOTAL AG 2:                   26.237,04
+======================================================================
+TOTAL GERAL:                     50.528,39
+======================================================================
+Total de contas auditadas: 10
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[TESTE SUCESSO 2] Chamada da Funcao FN_PET_JSON para Pacientes Cadastrados
+--------------------------------------------------------------------------------
+JSON Pet ID 1 -> {"idPet":1,"nome":"Rex","especie":"Cachorro","raca":"Labrador Retriever","dataNascimento":"2020-03-15","peso":31.50,"tutor":{"nome":"Joao Vitor Lacerda","cpf":"111.222.333-44"}}
+JSON Pet ID 2 -> {"idPet":2,"nome":"Luna","especie":"Cachorro","raca":"Golden Retriever","dataNascimento":"2021-07-10","peso":25.20,"tutor":{"nome":"Kauan Vieira de Lima","cpf":"222.333.444-55"}}
+JSON Pet ID 3 -> {"idPet":3,"nome":"Mia","especie":"Gato","raca":"Persa","dataNascimento":"2022-02-20","peso":4.60,"tutor":{"nome":"Murillo Carapia","cpf":"333.444.555-66"}}
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[TESTE SUCESSO 3] Chamada da Funcao FN_CLASSIFICAR_RISCO com Parametros Reais
+--------------------------------------------------------------------------------
+Pet 1 (Temp 38.4C, Ativ 85%, Alim 90%) -> NORMAL (ESTADO DE SAUDE ESTAVEL)
+Pet 2 (Temp 39.3C, Ativ 45%, Alim 55%) -> ATENCAO CLINICA (ALTERACAO MODERADA)
+Pet 3 (Temp 39.8C, Ativ 15%, Alim 20%) -> ALTO RISCO (FEBRE / PROSTRACAO CRITICA)
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 1] SP_INSERIR_TUTOR com CPF Duplicado (DUP_VAL_ON_INDEX)
+--------------------------------------------------------------------------------
+>> [SP_INSERIR_TUTOR] EXCECAO TRATADA: Restricao violada: CPF (111.222.333-44) ou EMAIL (duplicado@teste.com) ja cadastrado.
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 2] SP_INSERIR_CLINICA com CNPJ Duplicado (DUP_VAL_ON_INDEX)
+--------------------------------------------------------------------------------
+>> [SP_INSERIR_CLINICA] EXCECAO TRATADA: Restricao violada: CNPJ (12.345.678/0001-90) ja cadastrado.
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 3] SP_INSERIR_PET com Tutor Inexistente (Violacao de FK)
+--------------------------------------------------------------------------------
+>> [SP_INSERIR_PET] EXCECAO TRATADA: Integridade violada: Tutor ID (9999) nao existe na TB_TUTOR.
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 4] FN_PET_JSON com ID Invalido (-5) e Inexistente (99999)
+--------------------------------------------------------------------------------
+>> [FN_PET_JSON] EXCECAO TRATADA: Identificador do Pet invalido ou nulo.
+Resultado com ID Negativo    -> {"status":"ERRO","codigo":-20020,"mensagem":"Identificador do Pet invalido ou nulo."}
+>> [FN_PET_JSON] EXCECAO TRATADA: Nenhum registro de Pet localizado para o ID 99999.
+Resultado com ID Inexistente -> {"status":"ERRO","codigo":-20021,"mensagem":"Nenhum registro de Pet localizado para o ID informado."}
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 5] FN_CLASSIFICAR_RISCO com Temperatura Fora da Faixa (52.5C)
+--------------------------------------------------------------------------------
+>> [FN_CLASSIFICAR_RISCO] EXCECAO TRATADA: Temperatura fora da faixa biologica valida (30C-45C).
+Retorno com Temperatura Anormal -> ERRO [-20031]: Temperatura biometrica fora da faixa biologica valida (30.0C a 45.0C).
+>> [FN_CLASSIFICAR_RISCO] EXCECAO TRATADA: Paciente Pet ID (99999) nao cadastrado.
+Retorno com Pet Inexistente     -> ERRO [-20030]: Paciente Pet ID (99999) nao cadastrado no banco.
+
+PL/SQL procedure successfully completed.
+
+--------------------------------------------------------------------------------
+[DEMONSTRACAO EXCECAO 6] SP_INSERIR_CONTA_SALDO com Saldo Negativo (-500.00)
+--------------------------------------------------------------------------------
+>> [SP_INSERIR_CONTA_SALDO] EXCECAO TRATADA: Violacao de Check: Saldo nao pode ser negativo (-500).
+
+PL/SQL procedure successfully completed.
+
+Executando Testes DML na Tabela TB_PET para Auditoria...
+--------------------------------------------------------------------------------
+[TESTE AUDITORIA] Realizando operacoes DML para disparar TRG_AUDITORIA_PET
+--------------------------------------------------------------------------------
+>> Inserido Pet de Teste com ID: 6
+>> Atualizado Pet ID 6 (Peso alterado de 9.80 para 10.50)
+>> Atualizado Pet ID 1 (Rex: peso ajustado com sucesso)
+>> Removido Pet de Teste ID 6 para registrar DELETE na auditoria
+
+PL/SQL procedure successfully completed.
+
+Exibindo registros gerados na Auditoria DML (TB_AUDITORIA_PET)...
+================================================================================
+REGISTROS CAPTURADOS PELA TRIGGER DE AUDITORIA (TB_AUDITORIA_PET)
+================================================================================
+[  1] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:02
+      NEW -> ID_PET=1; NM_PET=Rex; ESPECIE=Cachorro; RACA=Labrador Retriever; PESO=31.50; ID_TUTOR=1
+[  2] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:02
+      NEW -> ID_PET=2; NM_PET=Luna; ESPECIE=Cachorro; RACA=Golden Retriever; PESO=25.20; ID_TUTOR=2
+[  3] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:02
+      NEW -> ID_PET=3; NM_PET=Mia; ESPECIE=Gato; RACA=Persa; PESO=4.60; ID_TUTOR=3
+[  4] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:02
+      NEW -> ID_PET=4; NM_PET=Thor; ESPECIE=Cachorro; RACA=Pastor Alemao; PESO=34.00; ID_TUTOR=4
+[  5] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:02
+      NEW -> ID_PET=5; NM_PET=Pipoca; ESPECIE=Gato; RACA=Siames; PESO=3.80; ID_TUTOR=5
+[  6] INSERT  | CLYVO_ADMIN     | 14/05/2026 10:14:08
+      NEW -> ID_PET=6; NM_PET=PetAuditoria; ESPECIE=Cachorro; RACA=Beagle; PESO=9.80; ID_TUTOR=1
+[  7] UPDATE  | CLYVO_ADMIN     | 14/05/2026 10:14:08
+      OLD -> ID_PET=6; NM_PET=PetAuditoria; ESPECIE=Cachorro; RACA=Beagle; PESO=9.80; ID_TUTOR=1
+      NEW -> ID_PET=6; NM_PET=PetAuditoria; ESPECIE=Cachorro; RACA=Beagle Puro; PESO=10.50; ID_TUTOR=1
+[  8] UPDATE  | CLYVO_ADMIN     | 14/05/2026 10:14:08
+      OLD -> ID_PET=1; NM_PET=Rex; ESPECIE=Cachorro; RACA=Labrador Retriever; PESO=31.50; ID_TUTOR=1
+      NEW -> ID_PET=1; NM_PET=Rex; ESPECIE=Cachorro; RACA=Labrador Retriever; PESO=31.70; ID_TUTOR=1
+[  9] DELETE  | CLYVO_ADMIN     | 14/05/2026 10:14:08
+      OLD -> ID_PET=6; NM_PET=PetAuditoria; ESPECIE=Cachorro; RACA=Beagle Puro; PESO=10.50; ID_TUTOR=1
+
+PL/SQL procedure successfully completed.
+
+Exibindo logs de erros capturados em tempo de execucao (TB_LOG_ERROS)...
+================================================================================
+HISTORICO OFICIAL DE EXCECOES TRATADAS E AUDITADAS (TB_LOG_ERROS)
+================================================================================
+[  1] SEMENTE_LOG_S3           | COD: -20091 | 14/05/2026 10:14:02 | Log de inicializacao do ambiente de auditoria Sprint 3 - 01
+[  2] SEMENTE_LOG_S3           | COD: -20092 | 14/05/2026 10:14:02 | Log de inicializacao do ambiente de auditoria Sprint 3 - 02
+[  3] SEMENTE_LOG_S3           | COD: -20093 | 14/05/2026 10:14:02 | Log de inicializacao do ambiente de auditoria Sprint 3 - 03
+[  4] SEMENTE_LOG_S3           | COD: -20094 | 14/05/2026 10:14:02 | Log de inicializacao do ambiente de auditoria Sprint 3 - 04
+[  5] SEMENTE_LOG_S3           | COD: -20095 | 14/05/2026 10:14:02 | Log de inicializacao do ambiente de auditoria Sprint 3 - 05
+[  6] SP_INSERIR_TUTOR         | COD:      1 | 14/05/2026 10:14:07 | Restricao violada: CPF (111.222.333-44) ou EMAIL (duplicado@teste.com) ja cadastrado.
+[  7] SP_INSERIR_CLINICA       | COD:      1 | 14/05/2026 10:14:07 | Restricao violada: CNPJ (12.345.678/0001-90) ja cadastrado.
+[  8] SP_INSERIR_PET           | COD: -20003 | 14/05/2026 10:14:07 | Integridade violada: Tutor ID (9999) nao existe na TB_TUTOR.
+[  9] SP_INSERIR_CONTA_SALDO   | COD: -20014 | 14/05/2026 10:14:08 | Violacao de Check: Saldo nao pode ser negativo (-500).
+
+PL/SQL procedure successfully completed.
+
+Realizando conferencia de registros minimos em todas as tabelas (COUNT >= 5)...
+
+TABELA           QTD_REGISTROS  STATUS_RUBRICA
+---------------  -------------  -----------------
+TB_TUTOR                     5  >= 5 (CONFORME)
+TB_CLINICA                   5  >= 5 (CONFORME)
+TB_PET                       5  >= 5 (CONFORME)
+TB_CONSULTA                  5  >= 5 (CONFORME)
+TB_VACINA                    5  >= 5 (CONFORME)
+TB_MEDICAMENTO               5  >= 5 (CONFORME)
+TB_AGENDAMENTO               5  >= 5 (CONFORME)
+TB_ALERTA                    5  >= 5 (CONFORME)
+TB_CONTA_SALDO              10  >= 5 (CONFORME)
+TB_LOG_ERROS                 9  >= 5 (CONFORME)
+TB_AUDITORIA_PET             9  >= 5 (CONFORME)
+
+11 rows selected.
+
+Commit complete.
+
+==================================================================================
+SCRIPT SPRINT 3 FINALIZADO COM 100% DE SUCESSO E TOTAL CONFORMIDADE COM A RUBRICA!
+==================================================================================
