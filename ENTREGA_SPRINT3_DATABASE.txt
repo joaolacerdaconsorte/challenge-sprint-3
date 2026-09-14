@@ -1,0 +1,74 @@
+================================================================================
+FIAP — CHALLENGE 2026 | MASTERING RELATIONAL AND NON-RELATIONAL DATABASE
+3ª SPRINT — ENTREGA OFICIAL DO PROJETO DE BANCO DE DADOS RELACIONAL & PL/SQL
+PROJETO: Clyvo Vet — Medicina Veterinária Digital e Preventiva
+TURMA: 2TDSPW
+================================================================================
+
+--------------------------------------------------------------------------------
+1. INTEGRANTES DA EQUIPE (EM ORDEM ALFABÉTICA):
+--------------------------------------------------------------------------------
+• João Vitor Lacerda        — RM 565565 (2TDSPW)
+• Kauan Vieira de Lima      — RM 565403 (2TDSPW)
+• Murillo Fernandes Carapia — RM 564969 (2TDSPW)
+• Pedro de Matos Previtali  — RM 564184 (2TDSPW)
+
+--------------------------------------------------------------------------------
+2. LINK DO REPOSITÓRIO GITHUB (PASTA /database):
+--------------------------------------------------------------------------------
+https://github.com/joaolacerdaconsorte/challenge-sprint-3/tree/main/database
+
+--------------------------------------------------------------------------------
+3. ARTEFATOS INCLUSOS NO PACOTE DE ENTREGA (.ZIP):
+--------------------------------------------------------------------------------
+1. Sprint3.sql
+   Script SQL/PL-SQL completo e executável (Drops, DDL, 10 Procedures, Trigger
+   TRG_AUDITORIA_PET, 2 Funções, Carga parametrizada >= 5 registros por tabela,
+   Relatório de Quebra de Grupo, Bloco Analítico LAG/LEAD e Testes de Exceção).
+
+2. DOCUMENTACAO_SPRINT3_DATABASE_CLYVO_VET.pdf
+   Documentação técnica formal (8 páginas) com folha de rosto oficial, integrantes,
+   matriz de conformidade da rubrica, dicionário de dados (11 tabelas), explicação
+   da trigger e prints reais do spool do terminal Oracle 19c.
+
+3. spool_execucao_sprint3.txt
+   Log textual completo de execução do script com SERVEROUTPUT ON, comprovando a
+   saída de todas as rotinas e a impressão das exceções tratadas.
+
+4. challengel 1.dmd
+   Arquivo de modelagem física e conceitual do Oracle SQL Developer Data Modeler.
+
+--------------------------------------------------------------------------------
+4. MATRIZ DE CONFORMIDADE COM A RUBRICA DE AVALIAÇÃO DA SPRINT 3:
+--------------------------------------------------------------------------------
+[x] ZERO FUNÇÕES BUILT-IN PARA JSON (-10 pts por ocorrência evitada):
+    A função FN_PET_JSON constrói a estrutura JSON exclusivamente por meio de
+    concatenação pura de strings (operador pipe-pipe ||). Nenhuma função nativa
+    da Oracle (TO_JSON, JSON_OBJECT, JSON_VALUE, etc.) foi utilizada.
+
+[x] TRATAMENTO DE EXCEÇÕES EM TODOS OS BLOCOS (-5 pts por item evitada):
+    100% das rotinas (procedures, functions, trigger e blocos anônimos) possuem
+    blocos EXCEPTION com tratamento específico (DUP_VAL_ON_INDEX, NO_DATA_FOUND,
+    VALUE_ERROR, etc.) e tratador genérico WHEN OTHERS.
+
+[x] APRESENTAÇÃO DE PRINTS COM ERROS TRATADOS (-5 pts por item evitada):
+    Todas as rotinas procedimentais emitem mensagem explicativa via DBMS_OUTPUT.PUT_LINE
+    quando uma exceção é tratada. O script inclui 6 blocos anônimos de testes
+    provocando e demonstrando visualmente o erro tratado em tempo de execução.
+
+[x] CÓDIGO ORGANIZADO E COMENTADO (-5 pts evitada):
+    Script Sprint3.sql modularizado em 9 seções temáticas, com cabeçalhos informativos
+    e comentários detalhados em cada procedure, function e trigger.
+
+[x] MÍNIMO DE 5 REGISTROS POR TABELA (-5 pts por tabela evitada):
+    Todas as 11 tabelas possuem no mínimo 5 registros persistidos, comprovados pela
+    consulta com COUNT(*) que exibe status '>= 5 (CONFORME)' para todas elas.
+
+[x] TRIGGER DE AUDITORIA COMPLETA E FUNCIONAL (-10 pts evitada):
+    A trigger TRG_AUDITORIA_PET monitora operações de INSERT, UPDATE e DELETE na
+    tabela TB_PET, gravando os dados anteriores (OLD), novos (NEW), usuário e
+    data/hora na tabela TB_AUDITORIA_PET.
+
+[x] ARQUIVO .SQL COMPLETO E EXECUTÁVEL (-10 pts evitada):
+    O script pode ser executado do início ao fim sem interrupções ou erros de compilação.
+================================================================================
